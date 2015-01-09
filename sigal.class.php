@@ -36,7 +36,7 @@ class Sigal {
   /** Number of characters of shortened image title. */
   public $imgTitleLen = 16;
   /** Date format string */
-  public $date_format = 'd. m. Y';
+  public $date_format = 'Y-m-d';
   /** Title of whole gallery. */
   public $galTitle = 'SiGal gallery';
   /** String shown in bottom of each page. Designed to some words about legal use of photos. */
