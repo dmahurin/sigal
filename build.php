@@ -180,7 +180,7 @@
 
 /*============================================================================*/
 function getExtension($fname) {
-	return mb_substr($fname,mb_strrpos($fname, '.')+1);
+	return substr($fname,strrpos($fname, '.')+1);
 }
 /*============================================================================*/
 function include_file($fname) {
