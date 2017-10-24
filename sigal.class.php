@@ -322,7 +322,7 @@ class Sigal {
         if ($thumb === $this->defaultIcon || $thumb === $this->defaultDirIcon || file_exists($thumb)) {
           echo '<img src="'.$thumb.'" height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
         } else {
-          echo '<img src="?mkthumb='.urlencode($this->basepathname($titlefoto)).'"  height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
+          echo '<img src="?static=1px" data-lazy="?mkthumb='.urlencode($this->basepathname($titlefoto)).'"  height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
         }
         echo '</a>';
         echo $this->getAlbumTitle($a);
@@ -343,6 +343,7 @@ class Sigal {
         echo ' | <a href="?">'.$this->lang('Back to top level').'</a>';
         echo '</div>';
     }
+    echo '<script src="?static=lazy.min"></script><script>lazy.init({delay:200});</script>';
     
     echo $this->html_tail;
   }
