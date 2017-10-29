@@ -1017,7 +1017,8 @@ class Sigal {
       $ext = strtolower($this->getExt($sourceImagePath));
 
       if(isset($this->func_videoimage) && $this->func_videoimage !== NULL && is_callable($this->func_videoimage) && in_array($ext, $this->extsVideo)) {
-        $group = call_user_func($this->func_videoimage, $path, $targetImageTempPath);
+        $sourceImagePath = call_user_func($this->func_videoimage, $path, $targetImageTempPath);
+        if(is_null($sourceImagePath)) { $sourceImagePath = $targetImageTempPath; }
         $sourceImagePath = $targetImageTempPath;
         $ext = 'jpg';
       }
