@@ -62,6 +62,10 @@
     $gg->makeThumbImage($_GET['mkthumb']);
   }
   /*========================================================================*/
+  if (isset($_GET['getthumb'])) {
+    $gg->getThumbImage($_GET['getthumb']);
+  }
+  /*========================================================================*/
   if (isset($_GET['foto'])) {
     session_start();
     if (isset($_POST['fakce']) && $_POST['fakce']==='addaccess') $gg->addAccess();

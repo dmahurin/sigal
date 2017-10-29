@@ -322,7 +322,7 @@ class Sigal {
         if ($thumb === $this->defaultIcon || $thumb === $this->defaultDirIcon || file_exists($thumb)) {
           echo '<img src="'.$thumb.'" height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
         } else {
-          echo '<img src="?static=1px" data-lazy="?mkthumb='.urlencode($this->basepathname($titlefoto)).'"  height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
+          echo '<img src="?getthumb='.urlencode($this->basepathname($titlefoto)).'" data-lazy="?mkthumb='.urlencode($this->basepathname($titlefoto)).'"  height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
         }
         echo '</a>';
         echo $this->getAlbumTitle($a);
@@ -428,7 +428,7 @@ class Sigal {
       if ($thumb === $this->defaultIcon || $thumb === $this->defaultDirIcon || file_exists($thumb)) {
         echo '<img src="'.$thumb.'" height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
       } else {
-        echo '<img src="?static=1px" data-lazy="?mkthumb='.urlencode($bn).'" height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
+        echo '<img src="?getthumb='.urlencode($bn).'" data-lazy="?mkthumb='.urlencode($bn).'" height="'.$this->thumb_y.'" alt="'.$bn.'" class="it" />';
       }
       echo '</a>';
       echo $this->getImageTitle($f);
@@ -741,6 +741,26 @@ class Sigal {
 
     return $zip->finalize();
   }
+  /**
+   * @brief get thumbnail of given image, if it exists, or get empty image.
+   * @param string $file The original filename.
+   */
+  public function getThumbImage($file) {
+    $f = $this->dir . '/' . $this->sanitizePath(urldecode($file));
+    $image = exif_thumbnail($f, $width, $height, $type);
+    if ($image!==false) {
+      header('Content-type: '.image_type_to_mime_type($type));
+      echo $image;
+    } else {
+      $img = imagecreate(1,1);
+      $bg = imagecolorallocatealpha($img, 0, 0, 0, 127 );
+      header( "Content-type: image/png" );
+      imagepng($img);
+      imagecolordeallocate($img, $bg);
+      imagedestroy($img);
+    }
+    exit;
+  }
   /*========================================================================*/
   /**
    * @brief Creates thumbnail of given image.
@@ -748,6 +768,17 @@ class Sigal {
    */
   public function makeThumbImage($file) {
     $f = $this->dir . '/' . $this->sanitizePath(urldecode($file));
+    $image = exif_thumbnail($f, $width, $height, $type);
+    if ($image!==false) {
+      if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+        header('HTTP/1.1 304 Not Modified');
+        die();
+      }
+      header('Content-type: '.image_type_to_mime_type($type));
+      echo $image;
+      exit;
+    }
+
     $ext = strtolower($this->getExt($f));
     if (file_exists($f) && in_array($ext, $this->extsIcon)) {
       $thumb = $this->resizeImage($f, $this->thumb_x);
