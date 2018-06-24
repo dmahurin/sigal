@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  web:
+    build: .
+    shm_size: '1gb'
+    ports:
+     - "80:80"
+    volumes:
+     - /srv/sigal/pictures:/var/www/html/pics/pictures
+     - /srv/sigal/cache:/var/www/html/pics/cache
+     - /srv/sigal/config.php:/var/www/html/pics/config.php
