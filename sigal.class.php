@@ -1009,7 +1009,6 @@ class Sigal {
     $outputImageQuality = 80;
     echo $targetDir;
 
-
     if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
 
     /* Check if file is already cached, if so just deliver existing image */
@@ -1153,6 +1152,9 @@ class Sigal {
       }
       $newImage = imagecreatetruecolor($new_x, $new_y);
       imagecopyresampled($newImage, $originalImage, 0, 0, $srcx, $srcy, $new_x, $new_y, $srcw, $srch);
+
+      $newImage = imagerotate($newImage, array_values([0, 0, 0, 180, 0, 0, -90, 0, 90])[@exif_read_data($path)['Orientation'] ?: 0], 0);
+
       imagejpeg($newImage, $targetImagePath, $outputImageQuality);
       imagedestroy($newImage);
       imagedestroy($originalImage);
